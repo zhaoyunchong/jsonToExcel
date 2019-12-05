@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/JsonExportExcel.min.js"></script>
+		<script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
+		<script src="./js/pub.js"></script>
+		<script>
+			function getData(){
+				pub._InitAxios({
+		        _url:pub._url,//公共接口
+		        ur:pub._DetailApi.getPart,
+		        data:{
+			          "column_id":9201911221311140,
+			          "pageNum":1,
+			          "pageSize":30,  
+			      },
+			        cbk:(res)=>{
+			       		// console.log(res.page.list)
+			       		var newArr=[];
+			       		for(var value of res.page.list){
+			       			var obj={};
+			       			obj.id=value.article_id;
+			       			obj.name=value.article_name;
+			       			newArr.push(obj);
+			       		}
+			       		console.log(newArr);
+			       		getExcel(newArr);
+			        }
+			      })
+			}
+			function getExcel(data){
+				var option={};
+				option.fileName = 'excel'
+				option.datas=[
+					{
+						sheetData:data,
+						sheetHeader:['id','name']//前端指定的表头
+					},
+				]
+				var toExcel=new ExportJsonExcel(option);
+				toExcel.saveExcel();
+			}
+		</script>
+	</head>
+	<body>
+		<button onclick="getData()">点击我下载表格</button>
+	</body>
+</html>
